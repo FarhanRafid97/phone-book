@@ -12,7 +12,8 @@ const Footer = () => {
         bottom: 0px;
         display: flex;
         align-items: center;
-        padding: 15px;
+
+        backdrop-filter: blur(12px);
       `}
     >
       <ContainerNavFoot>
