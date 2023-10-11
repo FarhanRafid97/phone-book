@@ -6,17 +6,12 @@ import { css } from '@emotion/react';
 interface ILayoutsProps {
   children: ReactNode;
 }
+const styleMainConent = css({ padding: '80px 0px', minHeight: '100vh' });
+
 const Layouts: React.FC<ILayoutsProps> = ({ children }) => {
   return (
     <>
-      <Navbar />{' '}
-      <main
-        css={css`
-          padding: 80px 0px;
-        `}
-      >
-        {children}
-      </main>
+      <Navbar /> <main css={styleMainConent}>{children}</main>
       <Footer />
     </>
   );

@@ -1,3 +1,4 @@
+import ContainerNavFoot from '@/components/Ui/ContainerNavFoot';
 import { css } from '@emotion/react';
 const Navbar: React.FC = () => {
   return (
@@ -5,11 +6,21 @@ const Navbar: React.FC = () => {
       css={css`
         position: fixed;
         width: 100%;
-        padding: 10px;
         top: 0px;
       `}
     >
-      Navbar
+      <ContainerNavFoot>
+        <p
+          css={css`
+            color: #555555;
+            margin: auto;
+            font-weight: bold;
+            font-size: 24px;
+          `}
+        >
+          PhoneBook
+        </p>
+      </ContainerNavFoot>
     </nav>
   );
 };
