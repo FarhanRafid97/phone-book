@@ -1,9 +1,13 @@
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import { css } from '@emotion/react';
 import { FileEdit, MoreVertical, Star, Trash2 } from 'lucide-react';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import EditContact from './EditContact';
-const ActionOption = () => {
+import { BaseContact } from '@/types/Contact';
+interface IActionOptionProps {
+  contact: BaseContact;
+}
+const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
   const refDropdown = useRef(null);
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -49,6 +53,7 @@ const ActionOption = () => {
       ) : null}
       {isOpenModal ? (
         <EditContact
+          contact={contact}
           isOpenModal={isOpenModal}
           setIsOpenModal={setIsOpenModal}
         />
@@ -61,6 +66,7 @@ const dropDownstyle = css`
   position: absolute;
   right: 0;
   background-color: #242f43;
+  z-index: 99;
 
   div {
     display: flex;

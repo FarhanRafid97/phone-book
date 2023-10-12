@@ -39,7 +39,7 @@ const ListContact: React.FC<IListContactProps> = ({ contact }) => {
           margin-left: auto;
         `}
       >
-        <ActionOption />
+        <ActionOption contact={contact} />
       </div>
     </div>
   );
