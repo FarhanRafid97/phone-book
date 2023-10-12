@@ -2,7 +2,7 @@ import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
 import { Phone, UserCircle } from 'lucide-react';
 import React, { useState } from 'react';
-import EditContact from './EditContact';
+import ActionOption from './ActionOption';
 
 interface IListContactProps {
   contact: BaseContact;
@@ -34,7 +34,13 @@ const ListContact: React.FC<IListContactProps> = ({ contact }) => {
           </p>
         )}
       </div>
-      <EditContact />
+      <div
+        css={css`
+          margin-left: auto;
+        `}
+      >
+        <ActionOption />
+      </div>
     </div>
   );
 };
