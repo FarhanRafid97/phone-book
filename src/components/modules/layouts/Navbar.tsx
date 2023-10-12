@@ -1,5 +1,6 @@
 import ContainerNavFoot from '@/components/Ui/ContainerNavFoot';
 import { css } from '@emotion/react';
+import { Contact } from 'lucide-react';
 const Navbar: React.FC = () => {
   return (
     <nav
@@ -7,19 +8,27 @@ const Navbar: React.FC = () => {
         position: fixed;
         width: 100%;
         top: 0px;
+        z-index: 999;
+        backdrop-filter: blur(12px);
       `}
     >
       <ContainerNavFoot>
-        <p
+        <div
           css={css`
-            color: #555555;
-            margin: auto;
             font-weight: bold;
+            align-items: end;
+            gap: 10px;
+            margin: 0 auto;
             font-size: 24px;
+            display: flex;
+            p {
+              color: white;
+            }
           `}
         >
-          PhoneBook
-        </p>
+          <Contact color="white" />
+          <p>PhoneBook</p>
+        </div>
       </ContainerNavFoot>
     </nav>
   );

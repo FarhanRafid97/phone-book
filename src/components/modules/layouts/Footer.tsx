@@ -17,11 +17,20 @@ const Footer = () => {
       `}
     >
       <ContainerNavFoot>
-        {Icons.map((icon) => (
-          <WrapperIcon>
-            <icon.icon size={26} color="white" />
-          </WrapperIcon>
-        ))}
+        <div
+          css={css`
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+          `}
+        >
+          {Icons.map((icon, idx) => (
+            <WrapperIcon key={idx}>
+              <icon.icon size={26} color="white" />
+            </WrapperIcon>
+          ))}
+        </div>
       </ContainerNavFoot>
     </footer>
   );
