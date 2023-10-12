@@ -11,8 +11,12 @@ const Container: React.FC<IContainerProps> = ({ children }) => {
 
 export default Container;
 
-const containerStyle = css({
-  width: '480px',
-  margin: '0px auto',
-  padding: '32px 32px 56px',
-});
+const containerStyle = css`
+  width: 480px;
+
+  margin: 0px auto;
+  padding: 32px 32px 56px;
+  @media (max-width: 500px) {
+    width: 100%;
+  }
+`;

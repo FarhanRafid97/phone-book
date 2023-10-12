@@ -13,11 +13,15 @@ export default ContainerNavFoot;
 
 const containerStyle = css`
   width: 480px;
-
   display: flex;
-  justify-content: space-between;
+
   width: 480px;
   padding: 20px 10px;
-
   margin: auto;
+  @media (max-width: 500px) {
+    padding: 15px 10px;
+
+    padding-right: 5px;
+    width: 100%;
+  }
 `;
