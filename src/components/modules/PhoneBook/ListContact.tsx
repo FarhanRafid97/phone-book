@@ -1,7 +1,8 @@
 import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
-import { Edit, Phone, UserCircle } from 'lucide-react';
+import { Phone, UserCircle } from 'lucide-react';
 import React, { useState } from 'react';
+import EditContact from './EditContact';
 
 interface IListContactProps {
   contact: BaseContact;
@@ -17,12 +18,12 @@ const ListContact: React.FC<IListContactProps> = ({ contact }) => {
         {isShowMore}
         {!isShowMore ? (
           <p className="phoneNumber">
-            <Phone size={10} /> {contact.phones[0].number}
+            <Phone size={10} /> {contact.phones?.[0]?.number ?? ''}
           </p>
         ) : (
           contact.phones.map((phone) => (
-            <p className="phoneNumber">
-              <Phone size={10} /> {phone.number}
+            <p key={phone.number} className="phoneNumber">
+              <Phone size={10} /> {phone?.number}
             </p>
           ))
         )}
@@ -33,20 +34,7 @@ const ListContact: React.FC<IListContactProps> = ({ contact }) => {
           </p>
         )}
       </div>
-      <div
-        css={css`
-          margin-left: auto;
-          padding: 8px 10px;
-          border-radius: 7px;
-          background-color: rgb(0, 0, 0, 0.15);
-          cursor: pointer;
-          &:hover {
-            background-color: rgb(0, 0, 0, 0.3);
-          }
-        `}
-      >
-        <Edit size={18} color="white" />
-      </div>
+      <EditContact />
     </div>
   );
 };
@@ -76,7 +64,7 @@ const styleDetailUser = css`
   .showMore {
     width: fit-content;
     font-size: 10px;
-    color: #0505e8;
+    color: #14b1ff;
     cursor: pointer;
     &:hover {
       color: white;
