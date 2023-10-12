@@ -1,4 +1,4 @@
-@import url(./animation.css);
+@import url(./font.css);
 /* Reset CSS */
 html,
 body,
@@ -107,6 +107,7 @@ section {
 body {
   line-height: 1;
   background-color: #030712;
+  font-family: Roboto-google;
 }
 
 ol,
@@ -130,4 +131,17 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+.spinner {
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
