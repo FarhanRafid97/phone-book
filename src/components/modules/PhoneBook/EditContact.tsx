@@ -1,12 +1,13 @@
 import Container from '@/components/Ui/Container';
 import Input from '@/components/Ui/Input';
 import Modal from '@/components/Ui/Modal';
+import Spinner from '@/components/Ui/Spinner';
+import { useEditPhoneNumberMutation } from '@/gql/file';
 import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
+import { FileEdit } from 'lucide-react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Trash2, Plus } from 'lucide-react';
-import { useEditPhoneNumberMutation } from '@/gql/file';
 
 interface IEditContactProps {
   isOpenModal: boolean;
@@ -18,56 +19,67 @@ const EditContact: React.FC<IEditContactProps> = ({
   setIsOpenModal,
   contact,
 }) => {
-  const [dataContact, setDataContact] = useState(contact);
   const {
     register,
     handleSubmit,
-    setError,
-    getValues,
-
+    setValue,
+    setFocus,
+    watch,
     formState: { errors },
   } = useForm<BaseContact>({
-    values: dataContact,
+    values: contact,
   });
+  const watchPhone = watch('phones');
   const [editedPhoneIndex, seteditedPhoneIndex] = useState(-1);
   const [editPhoneNumber] = useEditPhoneNumberMutation();
   const [oldPhoneNumber, setOldPhoneNumber] = useState('');
+  const [isLoading, setIsloading] = useState(false);
 
   const onSubmit = (data) => {
     console.log(data);
   };
 
-  const onSubmitPhone = (data: BaseContact) => {
-    editPhoneNumber({
-      variables: {
-        pk_columns: {
-          number: oldPhoneNumber,
-          contact_id: contact.id,
-        },
-        new_phone_number: data.phones[editedPhoneIndex].number,
-      },
-      update(cache) {
-        cache.modify({
-          id: cache.identify({ __typename: 'contact', id: contact.id }),
-          fields: {
-            phones(existingPhone) {
-              const newData = existingPhone.map(
-                (ph: { number: string; __typename: string }, idxPh: number) => {
-                  return ph.number === oldPhoneNumber
-                    ? {
-                        __typename: 'phone',
-                        number: data.phones[editedPhoneIndex].number,
-                      }
-                    : ph;
-                },
-              );
-              console.log(newData);
-              return newData;
-            },
+  const onSubmitPhone = async (data: BaseContact) => {
+    setIsloading(true);
+    try {
+      await editPhoneNumber({
+        variables: {
+          pk_columns: {
+            number: oldPhoneNumber,
+            contact_id: contact.id,
           },
-        });
-      },
-    });
+          new_phone_number: data.phones[editedPhoneIndex].number,
+        },
+        update(cache) {
+          cache.modify({
+            id: cache.identify({ __typename: 'contact', id: contact.id }),
+            fields: {
+              phones(existingPhone): { number: string; __typename: string }[] {
+                const newData = [];
+                const edited = [];
+                for (let i = 0; i < existingPhone.length; i++) {
+                  if (existingPhone[i].number === oldPhoneNumber) {
+                    edited.push({
+                      __typename: 'phone',
+                      number: data.phones[editedPhoneIndex].number,
+                    });
+                  } else {
+                    newData.push(existingPhone[i]);
+                  }
+                }
+                return [...newData, ...edited];
+              },
+            },
+          });
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsloading(false);
+      seteditedPhoneIndex(-1);
+      setOldPhoneNumber('');
+    }
   };
   return (
     <Modal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
@@ -96,7 +108,7 @@ const EditContact: React.FC<IEditContactProps> = ({
             </form>
 
             <div className="wrapper-edit-phones">
-              {dataContact.phones.map((phone, i) => (
+              {contact.phones.map((phone, i) => (
                 <form key={i} onSubmit={handleSubmit(onSubmitPhone)}>
                   <div
                     css={css`
@@ -106,7 +118,7 @@ const EditContact: React.FC<IEditContactProps> = ({
                     `}
                     className="form-edit-phone"
                   >
-                    <div
+                    <label
                       css={css`
                         display: flex;
                         align-items: center;
@@ -114,16 +126,19 @@ const EditContact: React.FC<IEditContactProps> = ({
                         margin-bottom: 5px;
                       `}
                     >
-                      <p>Phone #{i + 1}</p>
-                    </div>
+                      <p className="label-input">Phone #{i + 1}</p>
+                    </label>
                     <Input
+                      value={watchPhone[i].number}
+                      onChange={(e) =>
+                        setValue(`phones.${i}.number`, e.target.value)
+                      }
                       disabled={i !== editedPhoneIndex}
-                      {...register(`phones.${i}.number`)}
                     />
                     {editedPhoneIndex === i ? (
                       <div className="wrapper-is-edit-button">
                         <button type="submit" css={buttonSave}>
-                          Save
+                          {isLoading ? <Spinner size={14} /> : '  Save'}
                         </button>
                         <button
                           type="button"
@@ -139,10 +154,13 @@ const EditContact: React.FC<IEditContactProps> = ({
                         onClick={() => {
                           setOldPhoneNumber(phone.number);
                           seteditedPhoneIndex(i);
+                          setTimeout(() => {
+                            setFocus(`phones.${i}.number`);
+                          }, 200);
                         }}
                         css={buttonEditContact}
                       >
-                        Edit Phone
+                        <FileEdit size={14} /> Edit Phone
                       </button>
                     )}
                   </div>
@@ -163,6 +181,10 @@ const buttonEditContact = css`
   cursor: pointer;
   background-color: #0e1c36;
   color: white;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
   &:hover {
     background-color: rgb(143, 143, 143);
   }
