@@ -141,7 +141,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
           }
         `}
       >
-        <div css={inputWrapperStyle}>
+        <div css={InputWrapperStyle}>
           <form
             className="wrapper-edit-contact"
             onSubmit={handleSubmit(onsubmitBasicInfo)}
@@ -153,7 +153,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                 width: 100%;
               `}
             >
-              <label css={containerFormInput}>
+              <label css={ContainerFormInput}>
                 <p>First Name</p>
                 <Input
                   ref={firstNameRef}
@@ -163,7 +163,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                   onChange={(e) => setValue('first_name', e.target.value)}
                 />
               </label>
-              <label css={containerFormInput}>
+              <label css={ContainerFormInput}>
                 <p>Last Name</p>
                 <Input
                   disabled={!isEditBasicInfo}
@@ -174,13 +174,13 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
               </label>
               {isEditBasicInfo ? (
                 <div className="wrapper-is-edit-button">
-                  <button type="submit" disabled={isLoading} css={buttonSave}>
+                  <button type="submit" disabled={isLoading} css={ButtonSave}>
                     {isLoading ? <Spinner size={14} /> : '  Save'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsEditBasicInfo(false)}
-                    css={buttonCancel}
+                    css={ButtonCancel}
                   >
                     Cancel
                   </button>
@@ -193,7 +193,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                       firstNameRef.current?.focus();
                     }, 50);
                   }}
-                  css={buttonEditContact}
+                  css={ButtonEditContact}
                 >
                   Edit Basic Info
                 </button>
@@ -213,7 +213,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                       width: 100%;
                     `}
                   >
-                    <label css={containerFormInput}>
+                    <label css={ContainerFormInput}>
                       <p className="label-input">Phone #{i + 1}</p>
 
                       <Input
@@ -230,14 +230,14 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                         <button
                           type="submit"
                           disabled={isLoading}
-                          css={buttonSave}
+                          css={ButtonSave}
                         >
                           {isLoading ? <Spinner size={14} /> : '  Save'}
                         </button>
                         <button
                           type="button"
                           onClick={() => seteditedPhoneIndex(-1)}
-                          css={buttonCancel}
+                          css={ButtonCancel}
                         >
                           Cancel
                         </button>
@@ -252,7 +252,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                             reInput.current?.focus();
                           }, 50);
                         }}
-                        css={buttonEditContact}
+                        css={ButtonEditContact}
                       >
                         <FileEdit size={14} /> Edit Phone
                       </button>
@@ -268,7 +268,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
   );
 };
 
-const buttonEditContact = css`
+export const ButtonEditContact = css`
   border: none;
   padding: 7px 0;
 
@@ -284,7 +284,7 @@ const buttonEditContact = css`
     background-color: rgb(143, 143, 143);
   }
 `;
-const buttonCancel = css`
+export const ButtonCancel = css`
   border: none;
   padding: 7px 15px;
   border-radius: 7px;
@@ -296,7 +296,7 @@ const buttonCancel = css`
     background-color: rgb(143, 143, 143);
   }
 `;
-const buttonSave = css`
+export const ButtonSave = css`
   border: none;
   padding: 7px 10px;
   border-radius: 7px;
@@ -308,7 +308,7 @@ const buttonSave = css`
     background-color: rgb(143, 143, 143);
   }
 `;
-const inputWrapperStyle = css`
+export const InputWrapperStyle = css`
   z-index: 99;
   width: 100%;
 
@@ -344,7 +344,7 @@ const inputWrapperStyle = css`
   }
 `;
 
-const containerFormInput = css`
+export const ContainerFormInput = css`
   display: flex;
   flex-direction: column;
 
