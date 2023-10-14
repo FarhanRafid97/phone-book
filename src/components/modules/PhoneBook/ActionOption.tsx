@@ -1,9 +1,11 @@
+import Modal from '@/components/Ui/Modal';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
+import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
-import { FileEdit, MoreVertical, Star, Trash2 } from 'lucide-react';
+import { FileEdit, MoreVertical, Search, Star, Trash2 } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import EditContact from './EditContact';
-import { BaseContact } from '@/types/Contact';
+import ModalForDetailUser from './ModalForDetailUser';
 interface IActionOptionProps {
   contact: BaseContact;
 }
@@ -11,6 +13,7 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
   const refDropdown = useRef(null);
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenModalDetailUser, setIsOpenModalDetailUser] = useState(false);
   useOutsideClick({
     isOpen: isOpenDropDown,
     setIsOpen: setIsOpenDropDown,
@@ -31,17 +34,33 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
         <MoreVertical color="white" />
       </div>
       {isOpenDropDown ? (
-        <div ref={refDropdown} css={dropDownstyle}>
+        <div
+          onClick={() => {
+            setTimeout(() => {
+              setIsOpenDropDown(false);
+            }, 50);
+          }}
+          ref={refDropdown}
+          css={dropDownstyle}
+        >
           <div
             onClick={() => {
               setIsOpenModal(true);
-
-              setIsOpenDropDown(false);
             }}
           >
             <FileEdit />
             <p>Edit</p>
           </div>
+
+          <div
+            onClick={() => {
+              setIsOpenModalDetailUser(true);
+            }}
+          >
+            <Search />
+            <p>Detail</p>
+          </div>
+
           <div>
             <Trash2 /> <p>Delete</p>
           </div>
@@ -52,10 +71,15 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
         </div>
       ) : null}
       {isOpenModal ? (
-        <EditContact
+        <Modal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
+          <EditContact contact={contact} />
+        </Modal>
+      ) : null}
+      {isOpenModalDetailUser ? (
+        <ModalForDetailUser
+          isOpenModal={isOpenModalDetailUser}
+          setIsOpenModal={setIsOpenModalDetailUser}
           contact={contact}
-          isOpenModal={isOpenModal}
-          setIsOpenModal={setIsOpenModal}
         />
       ) : null}
     </div>

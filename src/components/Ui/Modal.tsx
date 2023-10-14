@@ -1,12 +1,20 @@
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import { css } from '@emotion/react';
-import React, { ReactNode, useRef } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 interface IModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   children: ReactNode;
 }
 const Modal: React.FC<IModalProps> = ({ isOpen, setIsOpen, children }) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
   const refContent = useRef<null>(null);
   useOutsideClick({ isOpen, setIsOpen, ref: refContent });
   return (
