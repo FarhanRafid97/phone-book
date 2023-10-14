@@ -1,46 +1,83 @@
 import Container from '@/components/Ui/Container';
 import Input from '@/components/Ui/Input';
-import Modal from '@/components/Ui/Modal';
 import Spinner from '@/components/Ui/Spinner';
-import { useEditPhoneNumberMutation } from '@/gql/file';
+import {
+  useEditContactByIdMutation,
+  useEditPhoneNumberMutation,
+} from '@/gql/file';
 import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
 import { FileEdit } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { createRef, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface IEditContactProps {
-  isOpenModal: boolean;
   contact: BaseContact;
-  setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const EditContact: React.FC<IEditContactProps> = ({
-  isOpenModal,
-  setIsOpenModal,
-  contact,
-}) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    setFocus,
-    watch,
-    formState: { errors },
-  } = useForm<BaseContact>({
+const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
+  const { handleSubmit, setValue, watch } = useForm<BaseContact>({
     values: contact,
   });
-  const watchPhone = watch('phones');
-  const [editedPhoneIndex, seteditedPhoneIndex] = useState(-1);
-  const [editPhoneNumber] = useEditPhoneNumberMutation();
-  const [oldPhoneNumber, setOldPhoneNumber] = useState('');
-  const [isLoading, setIsloading] = useState(false);
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const [editPhoneNumber] = useEditPhoneNumberMutation();
+  const [editContactById] = useEditContactByIdMutation();
+
+  const [editedPhoneIndex, seteditedPhoneIndex] = useState(-1);
+  const [oldPhoneNumber, setOldPhoneNumber] = useState('');
+  const [isEditBasicInfo, setIsEditBasicInfo] = useState(false);
+  const [phoneRef, setPhoneRef] = useState<React.RefObject<HTMLInputElement>[]>(
+    [],
+  );
+  const [isLoading, setIsLoading] = useState(false);
+
+  const firstNameRef = useRef<HTMLInputElement>(null);
+
+  const watchPhone = watch('phones');
+  const watchFirstName = watch('first_name');
+  const watchLastName = watch('last_name');
+
+  useEffect(() => {
+    if (contact) {
+      setPhoneRef(contact.phones.map(() => createRef<HTMLInputElement>()));
+    }
+  }, [contact]);
+
+  const onsubmitBasicInfo = async (data: BaseContact) => {
+    setIsLoading(true);
+    try {
+      await editContactById({
+        variables: {
+          id: contact.id,
+          _set: {
+            first_name: data.first_name,
+            last_name: data.last_name,
+            updated_at: new Date(),
+          },
+        },
+        update(cache) {
+          cache.modify({
+            id: cache.identify({ __typename: 'contact', id: contact.id }),
+            fields: {
+              first_name(): string {
+                return data.first_name;
+              },
+              last_name(): string {
+                return data.last_name;
+              },
+            },
+          });
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+      setIsEditBasicInfo(false);
+    }
   };
 
   const onSubmitPhone = async (data: BaseContact) => {
-    setIsloading(true);
+    setIsLoading(true);
     try {
       await editPhoneNumber({
         variables: {
@@ -76,39 +113,98 @@ const EditContact: React.FC<IEditContactProps> = ({
     } catch (error) {
       console.log(error);
     } finally {
-      setIsloading(false);
+      setIsLoading(false);
       seteditedPhoneIndex(-1);
       setOldPhoneNumber('');
     }
   };
   return (
-    <Modal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
-      <Container>
-        <div
-          css={css`
-            max-height: 50vh;
-            overflow-y: auto;
-            padding-bottom: 15px;
-          `}
-        >
-          <div css={inputWrapperStyle}>
-            <form
-              className="wrapper-edit-contact"
-              onSubmit={handleSubmit(onSubmit)}
+    <Container>
+      <h1
+        css={css`
+          color: white;
+          font-weight: 500;
+          margin-bottom: 15px;
+          font-size: 28px;
+          text-align: center;
+        `}
+      >
+        Edit Contact {`${contact.first_name} ${contact.last_name}`}
+      </h1>
+      <div
+        css={css`
+          max-height: 50vh;
+          overflow-y: auto;
+          padding-bottom: 15px;
+          p {
+            color: white;
+          }
+        `}
+      >
+        <div css={inputWrapperStyle}>
+          <form
+            className="wrapper-edit-contact"
+            onSubmit={handleSubmit(onsubmitBasicInfo)}
+          >
+            <div
+              css={css`
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+              `}
             >
-              <div>
+              <label css={containerFormInput}>
                 <p>First Name</p>
-                <Input {...register('first_name')} />
-              </div>
-              <div>
+                <Input
+                  ref={firstNameRef}
+                  disabled={!isEditBasicInfo}
+                  value={watchFirstName}
+                  name="first_name"
+                  onChange={(e) => setValue('first_name', e.target.value)}
+                />
+              </label>
+              <label css={containerFormInput}>
                 <p>Last Name</p>
-                <Input {...register('last_name')} />
-              </div>
-              <button css={buttonEditContact}>Edit Contact</button>
-            </form>
+                <Input
+                  disabled={!isEditBasicInfo}
+                  value={watchLastName}
+                  name="last_name"
+                  onChange={(e) => setValue('last_name', e.target.value)}
+                />
+              </label>
+              {isEditBasicInfo ? (
+                <div className="wrapper-is-edit-button">
+                  <button type="submit" disabled={isLoading} css={buttonSave}>
+                    {isLoading ? <Spinner size={14} /> : '  Save'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditBasicInfo(false)}
+                    css={buttonCancel}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsEditBasicInfo(true);
+                    setTimeout(() => {
+                      firstNameRef.current?.focus();
+                    }, 50);
+                  }}
+                  css={buttonEditContact}
+                >
+                  Edit Basic Info
+                </button>
+              )}
+            </div>
+          </form>
 
-            <div className="wrapper-edit-phones">
-              {contact.phones.map((phone, i) => (
+          <div className="wrapper-edit-phones">
+            {contact.phones.map((phone, i) => {
+              const reInput = phoneRef[i];
+              return (
                 <form key={i} onSubmit={handleSubmit(onSubmitPhone)}>
                   <div
                     css={css`
@@ -116,28 +212,26 @@ const EditContact: React.FC<IEditContactProps> = ({
                       flex-direction: column;
                       width: 100%;
                     `}
-                    className="form-edit-phone"
                   >
-                    <label
-                      css={css`
-                        display: flex;
-                        align-items: center;
-                        gap: 5px;
-                        margin-bottom: 5px;
-                      `}
-                    >
+                    <label css={containerFormInput}>
                       <p className="label-input">Phone #{i + 1}</p>
+
+                      <Input
+                        ref={reInput}
+                        value={watchPhone[i].number}
+                        onChange={(e) =>
+                          setValue(`phones.${i}.number`, e.target.value)
+                        }
+                        disabled={i !== editedPhoneIndex}
+                      />
                     </label>
-                    <Input
-                      value={watchPhone[i].number}
-                      onChange={(e) =>
-                        setValue(`phones.${i}.number`, e.target.value)
-                      }
-                      disabled={i !== editedPhoneIndex}
-                    />
                     {editedPhoneIndex === i ? (
                       <div className="wrapper-is-edit-button">
-                        <button type="submit" css={buttonSave}>
+                        <button
+                          type="submit"
+                          disabled={isLoading}
+                          css={buttonSave}
+                        >
                           {isLoading ? <Spinner size={14} /> : '  Save'}
                         </button>
                         <button
@@ -155,8 +249,8 @@ const EditContact: React.FC<IEditContactProps> = ({
                           setOldPhoneNumber(phone.number);
                           seteditedPhoneIndex(i);
                           setTimeout(() => {
-                            setFocus(`phones.${i}.number`);
-                          }, 200);
+                            reInput.current?.focus();
+                          }, 50);
                         }}
                         css={buttonEditContact}
                       >
@@ -165,18 +259,19 @@ const EditContact: React.FC<IEditContactProps> = ({
                     )}
                   </div>
                 </form>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </div>
-      </Container>
-    </Modal>
+      </div>
+    </Container>
   );
 };
 
 const buttonEditContact = css`
   border: none;
   padding: 7px 0;
+
   border-radius: 7px;
   cursor: pointer;
   background-color: #0e1c36;
@@ -216,16 +311,17 @@ const buttonSave = css`
 const inputWrapperStyle = css`
   z-index: 99;
   width: 100%;
+
   flex-direction: column;
   gap: 40px;
   display: flex;
+
   .wrapper-edit-contact {
     flex-direction: column;
     gap: 10px;
     display: flex;
     .form-edit-phone {
       display: flex;
-
       flex-direction: column;
       width: 100%;
       p {
@@ -246,5 +342,13 @@ const inputWrapperStyle = css`
       }
     }
   }
+`;
+
+const containerFormInput = css`
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+  margin-bottom: 5px;
 `;
 export default EditContact;

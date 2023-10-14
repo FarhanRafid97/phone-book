@@ -13,10 +13,10 @@ export default Container;
 
 const containerStyle = css`
   width: 480px;
-
   margin: 0px auto;
-  padding: 32px 32px 56px;
+  padding: 32px 32px;
   @media (max-width: 500px) {
-    width: 100%;
+    width: 100vw;
+    padding: 32px 32px;
   }
 `;
