@@ -1,27 +1,77 @@
 import { css } from '@emotion/react';
-import { Order_By, useGetContactListQuery } from '../src/gql/file';
-
+import { Order_By, useGetContactListQuery } from './gql/file';
 import Container from '@/components/Ui/Container';
 import Layouts from '@/components/modules/layouts/Layouts';
 import { useReactiveVar } from '@apollo/client';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Spinner from './components/Ui/Spinner';
 import ListContact from './components/modules/PhoneBook/ListContact';
 import { isMoreList } from './utils/provider';
+import SearchInput from './components/Ui/SearchInput';
 
-const App = function App() {
+export const App = function App() {
   const isMoreData = useReactiveVar(isMoreList);
 
   const [offset, setOffset] = useState(0);
+  const [search, setSearch] = useState('');
+  const [eq, setEq] = useState('');
+
   const { data, fetchMore, loading } = useGetContactListQuery({
-    variables: { limit: 6, offset: offset, order_by: [{ id: Order_By.Desc }] },
+    variables: {
+      limit: 11,
+      offset: offset,
+      order_by: [{ id: Order_By.Desc }],
+    },
     notifyOnNetworkStatusChange: true,
   });
 
+  useEffect(() => {
+    const searchUser = async () => {
+      await fetchMore({
+        variables: {
+          offset: 0,
+          limit: 10,
+          where: {
+            first_name: {
+              _like: `%${eq}%`,
+            },
+          },
+        },
+      });
+      setOffset((p) => p - 5);
+    };
+    searchUser();
+  }, [fetchMore, eq]);
+
+  useEffect(() => {
+    const debounceFn = () => {
+      if (search === eq) {
+        return;
+      }
+      if (search === '') {
+        setEq('');
+      }
+
+      setEq(search);
+    };
+
+    const toDebounce = setTimeout(() => {
+      debounceFn();
+    }, 600);
+
+    return () => {
+      clearTimeout(toDebounce);
+    };
+  }, [eq, search]);
   return (
     <Layouts>
       <Container>
+        <SearchInput
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
         {loading ? (
           <div
             css={css`
@@ -39,6 +89,7 @@ const App = function App() {
             <ul
               css={css`
                 display: flex;
+
                 flex-direction: column;
                 row-gap: 15px;
                 justify-content: center;
@@ -49,7 +100,7 @@ const App = function App() {
                 return <ListContact key={contact.id} contact={contact} />;
               })}
             </ul>
-            <div css={paginationStyle}>
+            <div css={PaginationStyle}>
               {offset > 0 && (
                 <button
                   disabled={loading}
@@ -69,9 +120,9 @@ const App = function App() {
                   disabled={loading}
                   onClick={async () => {
                     await fetchMore({
-                      variables: { offset: offset + 5 },
+                      variables: { offset: offset + 10 },
                     });
-                    setOffset((p) => p + 5);
+                    setOffset((p) => p + 10);
                   }}
                 >
                   <ChevronRight size={24} color="white" />
@@ -85,7 +136,7 @@ const App = function App() {
   );
 };
 
-const paginationStyle = css`
+export const PaginationStyle = css`
   display: flex;
   margin-top: 30px;
   gap: 15px;

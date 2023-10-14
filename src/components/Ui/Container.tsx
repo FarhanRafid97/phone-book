@@ -14,7 +14,7 @@ export default Container;
 const containerStyle = css`
   width: 480px;
   margin: 0px auto;
-  padding: 32px 32px;
+  padding: 32px 2px;
   @media (max-width: 500px) {
     width: 100vw;
     padding: 32px 32px;
