@@ -6,7 +6,6 @@ import { css } from '@emotion/react';
 interface ILayoutsProps {
   children: ReactNode;
 }
-const styleMainConent = css({ padding: '80px 0px', minHeight: '100vh' });
 
 const Layouts: React.FC<ILayoutsProps> = ({ children }) => {
   return (
@@ -17,4 +16,8 @@ const Layouts: React.FC<ILayoutsProps> = ({ children }) => {
   );
 };
 
+const styleMainConent = css`
+  padding: 80px 0px;
+  min-height: 100vh;
+`;
 export default Layouts;
