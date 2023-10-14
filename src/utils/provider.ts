@@ -10,7 +10,7 @@ export const client = new ApolloClient({
             keyArgs: [],
             merge(_, incoming) {
               console.log(incoming);
-              const isMoreData = incoming.length < 6;
+              const isMoreData = incoming.length === 11;
               isMoreList(!isMoreData);
               if (!isMoreData) {
                 incoming.pop();

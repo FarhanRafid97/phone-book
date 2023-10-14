@@ -19,9 +19,8 @@ const containerStyle = css`
   padding: 20px 10px;
   margin: auto;
   @media (max-width: 500px) {
-    padding: 15px 10px;
+    padding: 15px 32px;
 
-    padding-right: 5px;
     width: 100%;
   }
 `;
