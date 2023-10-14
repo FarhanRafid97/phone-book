@@ -6,6 +6,7 @@ import { FileEdit, MoreVertical, Search, Star, Trash2 } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import EditContact from './EditContact';
 import ModalForDetailUser from './ModalForDetailUser';
+import DeleteContact from './DeleteContact';
 interface IActionOptionProps {
   contact: BaseContact;
 }
@@ -14,6 +15,8 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenModalDetailUser, setIsOpenModalDetailUser] = useState(false);
+  const [isOpenDialogDeleteContact, setIsOpenDialogDeleteContact] =
+    useState(false);
   useOutsideClick({
     isOpen: isOpenDropDown,
     setIsOpen: setIsOpenDropDown,
@@ -61,7 +64,7 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
             <p>Detail</p>
           </div>
 
-          <div>
+          <div onClick={() => setIsOpenDialogDeleteContact(true)}>
             <Trash2 /> <p>Delete</p>
           </div>
           <div>
@@ -80,6 +83,13 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
           isOpenModal={isOpenModalDetailUser}
           setIsOpenModal={setIsOpenModalDetailUser}
           contact={contact}
+        />
+      ) : null}
+      {isOpenDialogDeleteContact ? (
+        <DeleteContact
+          contact={contact}
+          isOpen={isOpenDialogDeleteContact}
+          setIsOpen={setIsOpenDialogDeleteContact}
         />
       ) : null}
     </div>
