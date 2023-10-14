@@ -1,3 +1,4 @@
+import Button from '@/components/Ui/Button';
 import Container from '@/components/Ui/Container';
 import Input from '@/components/Ui/Input';
 import Spinner from '@/components/Ui/Spinner';
@@ -174,21 +175,28 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
               </label>
               {isEditBasicInfo ? (
                 <div className="wrapper-is-edit-button">
-                  <button type="submit" disabled={isLoading} css={ButtonSave}>
-                    {isLoading ? <Spinner size={14} /> : '  Save'}
-                  </button>
-                  <button
+                  <Button
+                    isLoading={isLoading}
+                    type="submit"
+                    variant="green"
+                    disabled={isLoading}
+                    css={ButtonSave}
+                  >
+                    Save
+                  </Button>
+                  <Button
                     type="button"
+                    variant="gray"
                     onClick={() => setIsEditBasicInfo(false)}
-                    css={ButtonCancel}
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <button
                   onClick={() => {
                     setIsEditBasicInfo(true);
+                    seteditedPhoneIndex(-1);
                     setTimeout(() => {
                       firstNameRef.current?.focus();
                     }, 50);
@@ -210,6 +218,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                     css={css`
                       display: flex;
                       flex-direction: column;
+
                       width: 100%;
                     `}
                   >
@@ -234,13 +243,13 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                         >
                           {isLoading ? <Spinner size={14} /> : '  Save'}
                         </button>
-                        <button
+                        <Button
+                          variant="gray"
                           type="button"
                           onClick={() => seteditedPhoneIndex(-1)}
-                          css={ButtonCancel}
                         >
                           Cancel
-                        </button>
+                        </Button>
                       </div>
                     ) : (
                       <button
@@ -281,7 +290,7 @@ export const ButtonEditContact = css`
   gap: 5px;
   justify-content: center;
   &:hover {
-    background-color: rgb(143, 143, 143);
+    background-color: #8f8f8f;
   }
 `;
 export const ButtonCancel = css`
@@ -302,10 +311,10 @@ export const ButtonSave = css`
   border-radius: 7px;
   width: fit-content;
   cursor: pointer;
-  background-color: #26af5f;
+  background-color: #2fb366;
   color: white;
   &:hover {
-    background-color: rgb(143, 143, 143);
+    background-color: #31985c;
   }
 `;
 export const InputWrapperStyle = css`
@@ -315,6 +324,10 @@ export const InputWrapperStyle = css`
   flex-direction: column;
   gap: 40px;
   display: flex;
+  .wrapper-is-edit-button {
+    display: flex;
+    gap: 7px;
+  }
 
   .wrapper-edit-contact {
     flex-direction: column;

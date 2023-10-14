@@ -1,3 +1,4 @@
+import Button from '@/components/Ui/Button';
 import Dialog from '@/components/Ui/Dialog';
 import Spinner from '@/components/Ui/Spinner';
 import {
@@ -59,12 +60,16 @@ const DeleteContact: React.FC<DeleteContactProps> = ({
           From Contact
         </h1>
         <div css={wrapperDialogButton}>
-          <button onClick={onDeletContact} css={ButtonDialog}>
+          <Button onClick={onDeletContact} variant="red">
             {loading ? <Spinner size={14} color="white" /> : 'Delete'}
-          </button>
-          <button onClick={() => setIsOpen(false)} css={CancelButton}>
+          </Button>
+          <Button
+            variant="gray"
+            onClick={() => setIsOpen(false)}
+            css={CancelButton}
+          >
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </Dialog>
@@ -77,19 +82,7 @@ const wrapperDialogButton = css`
   margin-top: 40px;
   gap: 10px;
 `;
-const ButtonDialog = css`
-  border: none;
-  padding: 7px 10px;
-  border-radius: 7px;
-  width: fit-content;
 
-  cursor: pointer;
-  background-color: #af2626;
-  color: white;
-  &:hover {
-    background-color: #993434;
-  }
-`;
 const CancelButton = css`
   border: none;
   padding: 7px 10px;
