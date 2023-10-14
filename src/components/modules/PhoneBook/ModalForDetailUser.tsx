@@ -22,13 +22,13 @@ const ModalForDetailUser: React.FC<ModalForDetailUserProps> = ({
     <Modal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
       <div>
         <div css={ToggleEditAndDetailStyle}>
-          {isEdit ? (
-            <button onClick={() => setIsEdit(false)} css={ButtonEditContact}>
+          {!isEdit ? (
+            <button onClick={() => setIsEdit(true)} css={ButtonEditContact}>
               <FileEdit />
               <p>Edit</p>
             </button>
           ) : (
-            <button onClick={() => setIsEdit(true)} css={ButtonEditContact}>
+            <button onClick={() => setIsEdit(false)} css={ButtonEditContact}>
               <Search />
               <p>Detail</p>
             </button>
@@ -62,11 +62,10 @@ const ToggleEditAndDetailStyle = css`
   margin: 0px auto;
   padding: 10px 32px;
   display: flex;
-
   justify-content: end;
   @media (max-width: 500px) {
     width: 100vw;
-    padding: 32px 32px;
+    padding: 15px 32px;
   }
 `;
 export default ModalForDetailUser;

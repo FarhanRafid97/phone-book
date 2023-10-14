@@ -16,7 +16,7 @@ const DetailUser: React.FC<DetailUserProps> = ({ contact }) => {
           color: white;
 
           font-weight: 500;
-
+          margin-bottom: 25px;
           font-size: 28px;
           text-align: center;
         `}

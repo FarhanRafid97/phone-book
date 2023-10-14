@@ -2277,6 +2277,14 @@ export type DeleteContactByPkMutationVariables = Exact<{
 
 export type DeleteContactByPkMutation = { __typename?: 'mutation_root', delete_contact_by_pk?: { __typename?: 'contact', first_name: string, last_name: string, id: number } | null };
 
+export type EditContactByIdMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+  _set?: InputMaybe<Contact_Set_Input>;
+}>;
+
+
+export type EditContactByIdMutation = { __typename?: 'mutation_root', update_contact_by_pk?: { __typename?: 'contact', id: number, first_name: string, last_name: string, phones: Array<{ __typename?: 'phone', number: string }> } | null };
+
 export type EditPhoneNumberMutationVariables = Exact<{
   pk_columns: Phone_Pk_Columns_Input;
   new_phone_number: Scalars['String']['input'];
@@ -2376,6 +2384,45 @@ export function useDeleteContactByPkMutation(baseOptions?: Apollo.MutationHookOp
 export type DeleteContactByPkMutationHookResult = ReturnType<typeof useDeleteContactByPkMutation>;
 export type DeleteContactByPkMutationResult = Apollo.MutationResult<DeleteContactByPkMutation>;
 export type DeleteContactByPkMutationOptions = Apollo.BaseMutationOptions<DeleteContactByPkMutation, DeleteContactByPkMutationVariables>;
+export const EditContactByIdDocument = gql`
+    mutation EditContactById($id: Int!, $_set: contact_set_input) {
+  update_contact_by_pk(pk_columns: {id: $id}, _set: $_set) {
+    id
+    first_name
+    last_name
+    phones {
+      number
+    }
+  }
+}
+    `;
+export type EditContactByIdMutationFn = Apollo.MutationFunction<EditContactByIdMutation, EditContactByIdMutationVariables>;
+
+/**
+ * __useEditContactByIdMutation__
+ *
+ * To run a mutation, you first call `useEditContactByIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditContactByIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editContactByIdMutation, { data, loading, error }] = useEditContactByIdMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      _set: // value for '_set'
+ *   },
+ * });
+ */
+export function useEditContactByIdMutation(baseOptions?: Apollo.MutationHookOptions<EditContactByIdMutation, EditContactByIdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditContactByIdMutation, EditContactByIdMutationVariables>(EditContactByIdDocument, options);
+      }
+export type EditContactByIdMutationHookResult = ReturnType<typeof useEditContactByIdMutation>;
+export type EditContactByIdMutationResult = Apollo.MutationResult<EditContactByIdMutation>;
+export type EditContactByIdMutationOptions = Apollo.BaseMutationOptions<EditContactByIdMutation, EditContactByIdMutationVariables>;
 export const EditPhoneNumberDocument = gql`
     mutation EditPhoneNumber($pk_columns: phone_pk_columns_input!, $new_phone_number: String!) {
   update_phone_by_pk(pk_columns: $pk_columns, _set: {number: $new_phone_number}) {
