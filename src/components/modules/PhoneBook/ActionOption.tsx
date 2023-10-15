@@ -7,6 +7,7 @@ import React, { useRef, useState } from 'react';
 import EditContact from './EditContact';
 import ModalForDetailUser from './ModalForDetailUser';
 import DeleteContact from './DeleteContact';
+import { addToFavorite } from '@/utils/addToFavorite';
 interface IActionOptionProps {
   contact: BaseContact;
 }
@@ -69,21 +70,7 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
           </div>
           <div
             onClick={() => {
-              const data = localStorage.getItem('favorite');
-              let tempFavorite = [];
-              if (data) {
-                try {
-                  tempFavorite = JSON.parse(data);
-                  if (!Array.isArray(tempFavorite)) {
-                    tempFavorite = [];
-                  }
-                } catch (error) {
-                  console.error('Error parsing JSON:', error);
-                }
-              }
-
-              tempFavorite.push(contact);
-              localStorage.setItem('favorite', JSON.stringify(tempFavorite));
+              addToFavorite({ contact });
             }}
           >
             <Star />
@@ -118,7 +105,7 @@ const dropDownstyle = css`
   position: absolute;
   right: 0;
   background-color: #1d1d1d;
-  z-index: 99;
+  z-index: 9999;
   box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
   border-radius: 7px;
   div {

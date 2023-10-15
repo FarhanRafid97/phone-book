@@ -3,9 +3,14 @@ import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import ListContact from './ListContact';
+import Spinner from '@/components/Ui/Spinner';
+import { makeVar, useReactiveVar } from '@apollo/client';
+import { refetchLocalStorage } from '@/utils/addToFavorite';
 
 const FavoriteContact: React.FC = () => {
   const [favoriteContacts, setFavoriteContacts] = useState<BaseContact[]>([]);
+  const [loading, setLoading] = useState(true);
+  const triggerRefetchStorage = useReactiveVar(refetchLocalStorage);
   useEffect(() => {
     let ignore = false;
     const getFavoriteContact = () => {
@@ -14,10 +19,7 @@ const FavoriteContact: React.FC = () => {
       if (data) {
         try {
           tempFavorite = JSON.parse(data);
-          if (!Array.isArray(tempFavorite)) {
-            tempFavorite = [];
-            return;
-          }
+
           if (!ignore) {
             setFavoriteContacts(tempFavorite);
           }
@@ -25,12 +27,14 @@ const FavoriteContact: React.FC = () => {
           console.error('Error parsing JSON:', error);
         }
       }
+      isSkip(false);
+      setLoading(false);
     };
     getFavoriteContact();
     () => {
       ignore = true;
     };
-  }, []);
+  }, [triggerRefetchStorage]);
   return (
     <Container>
       <h1
@@ -44,10 +48,33 @@ const FavoriteContact: React.FC = () => {
         Favorite Contacts
       </h1>
       <div css={ScrollAbleComponent}>
-        {favoriteContacts.length > 0 ? (
-          favoriteContacts.map((contact) => <ListContact contact={contact} />)
+        {loading ? (
+          <div
+            css={css`
+              height: 400px;
+              display: flex;
+              width: 100%;
+              justify-content: center;
+              align-items: center;
+            `}
+          >
+            <Spinner size={40} color="white" />
+          </div>
+        ) : favoriteContacts?.length > 0 ? (
+          favoriteContacts?.map((contact) => <ListContact contact={contact} />)
         ) : (
-          <h1>No Favorite Data</h1>
+          <h1
+            css={css`
+              margin-bottom: 15px;
+              margin-top: 15px;
+              font-weight: 400;
+              color: white;
+              text-align: center;
+              font-size: 18px;
+            `}
+          >
+            No Favorite Data
+          </h1>
         )}
       </div>
     </Container>
@@ -58,7 +85,9 @@ export const ScrollAbleComponent = css`
   display: flex;
   gap: 15px;
   flex-direction: column;
-  max-height: 300px;
-  overflow-y: auto;
+
+  position: relative;
 `;
 export default FavoriteContact;
+
+export const isSkip = makeVar(true);

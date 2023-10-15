@@ -11,7 +11,7 @@ import { Plus, Trash } from 'lucide-react';
 
 import { useAddContactWithPhonesMutation } from '@/gql/file';
 import { useReactiveVar } from '@apollo/client';
-import { offsetVar } from '@/App';
+import { OffsetVar } from '@/App';
 interface AddNewContactProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +35,7 @@ const AddNewContact: React.FC<AddNewContactProps> = ({ isOpen, setIsOpen }) => {
 
   const { fields, append, remove } = useFieldArray({ control, name: 'phones' });
 
-  const offset = useReactiveVar(offsetVar);
+  const offset = useReactiveVar(OffsetVar);
 
   const onSubmit = async (data: BaseContact) => {
     setError('');
@@ -70,7 +70,16 @@ const AddNewContact: React.FC<AddNewContactProps> = ({ isOpen, setIsOpen }) => {
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <Container>
-        <h1>Add New Contact</h1>
+        <h1
+          css={css`
+            margin-bottom: 15px;
+            font-weight: 800;
+            color: white;
+            font-size: 24px;
+          `}
+        >
+          Add New Contact
+        </h1>
         <form action="" onSubmit={handleSubmit(onSubmit)}>
           <div css={containerFormAddContact}>
             <label htmlFor="">
@@ -176,11 +185,21 @@ const AddNewContact: React.FC<AddNewContactProps> = ({ isOpen, setIsOpen }) => {
             css={css`
               margin-top: 20px;
               width: 100%;
+              display: flex;
+              gap: 15px;
             `}
           >
             {error ? <p css={errorMessage}>{error}</p> : null}
             <Button isFull variant="blue">
               Save
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              isFull
+              variant="gray"
+            >
+              Cancel
             </Button>
           </div>
         </form>
@@ -201,6 +220,9 @@ const containerFormAddContact = css`
     display: flex;
     flex-direction: column;
     gap: 5px;
+    > span {
+      font-size: 14px;
+    }
   }
 `;
 
