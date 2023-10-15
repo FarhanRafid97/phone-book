@@ -19,18 +19,19 @@ type ButtonColor = typeof buttonColor;
 type ButtonTypesProps = {
   variant?: keyof ButtonColor;
   children: React.ReactNode;
+  isFull?: boolean;
   isLoading?: boolean;
 } & React.ComponentPropsWithRef<'button'>;
 
 const Button: React.FC<ButtonTypesProps> = forwardRef<
   HTMLButtonElement,
   ButtonTypesProps
->(({ variant = 'gray', isLoading, children, ...props }, ref) => {
+>(({ variant = 'gray', isFull, isLoading, children, ...props }, ref) => {
   const ButtonDialog = css`
     border: none;
     padding: 7px 10px;
     border-radius: 7px;
-    width: fit-content;
+    width: ${isFull ? '100%' : 'fit-content'};
 
     cursor: pointer;
     background-color: ${buttonColor[variant]};
