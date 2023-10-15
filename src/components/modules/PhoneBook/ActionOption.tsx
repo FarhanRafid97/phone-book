@@ -67,7 +67,27 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
           <div onClick={() => setIsOpenDialogDeleteContact(true)}>
             <Trash2 /> <p>Delete</p>
           </div>
-          <div>
+          <div
+            onClick={() => {
+              const data = localStorage.getItem('favorite');
+              let tempFavorite = [];
+              if (data) {
+                try {
+                  tempFavorite = JSON.parse(data);
+                  if (!Array.isArray(tempFavorite)) {
+                    tempFavorite = []; // If it's not an array, initialize as an empty array
+                  }
+                } catch (error) {
+                  console.error('Error parsing JSON:', error);
+                }
+              }
+              console.log(tempFavorite);
+
+              // Now you can add the new item to tempFavorite and update the localStorage
+              tempFavorite.push(contact);
+              localStorage.setItem('favorite', JSON.stringify(tempFavorite));
+            }}
+          >
             <Star />
             <p>Favorite</p>
           </div>
@@ -99,16 +119,19 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
 const dropDownstyle = css`
   position: absolute;
   right: 0;
-  background-color: #242f43;
+  background-color: #1d1d1d;
   z-index: 99;
-
+  box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
   div {
     display: flex;
     align-items: center;
     cursor: pointer;
     gap: 5px;
     padding: 10px 15px;
-    min-width: 130px;
+
+    min-width: 180px;
+
     color: white;
     &:hover {
       background-color: rgb(128, 128, 128, 0.3);
