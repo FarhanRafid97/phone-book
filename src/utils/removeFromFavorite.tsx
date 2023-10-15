@@ -1,16 +1,26 @@
 import { BaseContact } from '@/types/Contact';
+import { refetchLocalStorage } from './addToFavorite';
 import { cache } from './provider';
-import { makeVar } from '@apollo/client';
 
-export const addToFavorite = ({ contact }: { contact: BaseContact }) => {
+export const removeFromFavorite = ({
+  contact,
+  isFirstPage,
+}: {
+  contact: BaseContact;
+  isFirstPage: boolean;
+}) => {
   const data = localStorage.getItem('favorite');
 
   const excludeID = localStorage.getItem('excludeID');
-  let tempExludeId = [];
-  let tempFavorite = [];
+  let tempExludeId: number[] = [];
+  let tempFavorite: BaseContact[] = [];
   if (data) {
     try {
-      tempFavorite = JSON.parse(data);
+      tempFavorite = JSON.parse(data)?.filter(
+        (favorite: BaseContact) => favorite.id !== contact.id,
+      );
+
+      console.log('tempFavorite', tempFavorite);
       if (!Array.isArray(tempFavorite)) {
         tempFavorite = [];
       }
@@ -21,8 +31,9 @@ export const addToFavorite = ({ contact }: { contact: BaseContact }) => {
 
   if (excludeID) {
     try {
-      tempExludeId = JSON.parse(excludeID);
-
+      tempExludeId = JSON.parse(excludeID)?.filter(
+        (id: number) => id !== contact.id,
+      );
       if (!Array.isArray(tempExludeId)) {
         tempExludeId = [];
       }
@@ -33,20 +44,15 @@ export const addToFavorite = ({ contact }: { contact: BaseContact }) => {
   cache.modify({
     fields: {
       contact(existing): BaseContact[] {
-        const newData = existing.filter(
-          (exist: BaseContact) => exist.id !== contact.id,
-        );
-
-        return newData;
+        if (!isFirstPage) {
+          return existing;
+        }
+        return [contact, ...existing];
       },
     },
   });
 
-  tempFavorite.push(contact);
-  tempExludeId.push(contact.id);
-  refetchLocalStorage(contact.id);
+  refetchLocalStorage(Math.random());
   localStorage.setItem('favorite', JSON.stringify(tempFavorite));
   localStorage.setItem('excludeID', JSON.stringify(tempExludeId));
 };
-
-export const refetchLocalStorage = makeVar(1);

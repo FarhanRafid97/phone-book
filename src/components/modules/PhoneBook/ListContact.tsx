@@ -6,8 +6,12 @@ import ActionOption from './ActionOption';
 
 interface IListContactProps {
   contact: BaseContact;
+  isFavoriteList?: boolean;
 }
-const ListContact: React.FC<IListContactProps> = ({ contact }) => {
+const ListContact: React.FC<IListContactProps> = ({
+  contact,
+  isFavoriteList,
+}) => {
   const isMore = contact.phones.length > 1;
   const [isShowMore, setIsShowMore] = useState(false);
   return (
@@ -39,7 +43,7 @@ const ListContact: React.FC<IListContactProps> = ({ contact }) => {
           margin-left: auto;
         `}
       >
-        <ActionOption contact={contact} />
+        <ActionOption isFavoriteList={isFavoriteList} contact={contact} />
       </div>
     </div>
   );

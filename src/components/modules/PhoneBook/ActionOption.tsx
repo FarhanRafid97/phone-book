@@ -2,16 +2,31 @@ import Modal from '@/components/Ui/Modal';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
-import { FileEdit, MoreVertical, Search, Star, Trash2 } from 'lucide-react';
+import {
+  FileEdit,
+  MoreVertical,
+  Search,
+  Star,
+  Trash,
+  Trash2,
+} from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import EditContact from './EditContact';
 import ModalForDetailUser from './ModalForDetailUser';
 import DeleteContact from './DeleteContact';
 import { addToFavorite } from '@/utils/addToFavorite';
+import { removeFromFavorite } from '@/utils/removeFromFavorite';
+import { useReactiveVar } from '@apollo/client';
+import { OffsetVar } from '@/App';
 interface IActionOptionProps {
   contact: BaseContact;
+  isFavoriteList?: boolean;
 }
-const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
+const ActionOption: React.FC<IActionOptionProps> = ({
+  contact,
+  isFavoriteList,
+}) => {
+  const offset = useReactiveVar(OffsetVar);
   const refDropdown = useRef(null);
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -70,10 +85,16 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
           </div>
           <div
             onClick={() => {
-              addToFavorite({ contact });
+              if (isFavoriteList) {
+                removeFromFavorite({ contact, isFirstPage: offset === 0 });
+                console.log('remove');
+              } else {
+                console.log('add');
+                addToFavorite({ contact });
+              }
             }}
           >
-            <Star />
+            {isFavoriteList ? <Trash /> : <Star />}
             <p>Favorite</p>
           </div>
         </div>

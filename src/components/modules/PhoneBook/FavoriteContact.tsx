@@ -15,11 +15,12 @@ const FavoriteContact: React.FC = () => {
     let ignore = false;
     const getFavoriteContact = () => {
       const data = localStorage.getItem('favorite');
+
       let tempFavorite = [];
       if (data) {
         try {
           tempFavorite = JSON.parse(data);
-
+          console.log('temp refetchg', tempFavorite);
           if (!ignore) {
             setFavoriteContacts(tempFavorite);
           }
@@ -27,7 +28,7 @@ const FavoriteContact: React.FC = () => {
           console.error('Error parsing JSON:', error);
         }
       }
-      isSkip(false);
+      IsSkip(false);
       setLoading(false);
     };
     getFavoriteContact();
@@ -61,7 +62,9 @@ const FavoriteContact: React.FC = () => {
             <Spinner size={40} color="white" />
           </div>
         ) : favoriteContacts?.length > 0 ? (
-          favoriteContacts?.map((contact) => <ListContact contact={contact} />)
+          favoriteContacts?.map((contact) => (
+            <ListContact key={contact.id} isFavoriteList contact={contact} />
+          ))
         ) : (
           <h1
             css={css`
@@ -90,4 +93,4 @@ export const ScrollAbleComponent = css`
 `;
 export default FavoriteContact;
 
-export const isSkip = makeVar(true);
+export const IsSkip = makeVar(true);

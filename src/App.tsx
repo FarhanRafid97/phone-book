@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import SearchInput from './components/Ui/SearchInput';
 import Spinner from './components/Ui/Spinner';
 import FavoriteContact, {
-  isSkip,
+  IsSkip,
 } from './components/modules/PhoneBook/FavoriteContact';
 import ListContact from './components/modules/PhoneBook/ListContact';
 import { Order_By, useGetContactListQuery } from './gql/file';
@@ -17,8 +17,7 @@ export const OffsetVar = makeVar(0);
 
 export const App = function App() {
   const isMoreData = useReactiveVar(isMoreList);
-  const isSkipFetch = useReactiveVar(isSkip);
-  console.log(isSkipFetch);
+  const isSkipFetch = useReactiveVar(IsSkip);
 
   const [offset, setOffset] = useState(0);
   const [search, setSearch] = useState('');
@@ -132,6 +131,8 @@ export const App = function App() {
               <div css={PaginationStyle}>
                 {offset > 0 && (
                   <button
+                    type="button"
+                    aria-label="button-prev-pagination"
                     name="button-prev-pagination"
                     disabled={loading}
                     onClick={async () => {
@@ -150,6 +151,8 @@ export const App = function App() {
 
                 {isMoreData && (
                   <button
+                    type="button"
+                    aria-label="button-next-pagination"
                     name="button-next-pagination"
                     disabled={loading}
                     onClick={async () => {
