@@ -1,14 +1,17 @@
-import { css } from '@emotion/react';
-import { Order_By, useGetContactListQuery } from './gql/file';
 import Container from '@/components/Ui/Container';
 import Layouts from '@/components/modules/layouts/Layouts';
-import { useReactiveVar } from '@apollo/client';
+import { makeVar, useReactiveVar } from '@apollo/client';
+import { css } from '@emotion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import Spinner from './components/Ui/Spinner';
-import ListContact from './components/modules/PhoneBook/ListContact';
-import { isMoreList } from './utils/provider';
+import { Helmet } from 'react-helmet';
 import SearchInput from './components/Ui/SearchInput';
+import Spinner from './components/Ui/Spinner';
+import FavoriteContact from './components/modules/PhoneBook/FavoriteContact';
+import ListContact from './components/modules/PhoneBook/ListContact';
+import { Order_By, useGetContactListQuery } from './gql/file';
+import { isMoreList } from './utils/provider';
+export const OffsetVar = makeVar(0);
 
 export const App = function App() {
   const isMoreData = useReactiveVar(isMoreList);
@@ -39,7 +42,7 @@ export const App = function App() {
           },
         },
       });
-      setOffset((p) => p - 5);
+      OffsetVar(0);
     };
     searchUser();
   }, [fetchMore, eq]);
@@ -66,12 +69,29 @@ export const App = function App() {
   }, [eq, search]);
   return (
     <Layouts>
+      <Helmet>
+        <title>List Contacts - Phone Book</title>
+        <meta name="description" content="View and manage your contacts." />
+      </Helmet>
       <Container>
         <SearchInput
+          id="searchInput"
+          aria-label="searchInput"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <FavoriteContact />
 
+        <h1
+          css={css`
+            margin-bottom: 15px;
+            font-weight: 800;
+            color: white;
+            font-size: 24px;
+          `}
+        >
+          List Contacts
+        </h1>
         {loading ? (
           <div
             css={css`
@@ -85,8 +105,8 @@ export const App = function App() {
             <Spinner size={40} color="white" />
           </div>
         ) : (
-          <>
-            <ul
+          <div>
+            <div
               css={css`
                 display: flex;
 
@@ -99,16 +119,20 @@ export const App = function App() {
               {data?.contact.map((contact) => {
                 return <ListContact key={contact.id} contact={contact} />;
               })}
-            </ul>
+            </div>
             <div css={PaginationStyle}>
               {offset > 0 && (
                 <button
+                  name="button-prev-pagination"
                   disabled={loading}
                   onClick={async () => {
                     await fetchMore({
-                      variables: { offset: offset - 5 },
+                      variables: { offset: offset - 10 },
                     });
-                    setOffset((p) => p - 5);
+                    setOffset((p) => {
+                      OffsetVar(p - 10);
+                      return p - 10;
+                    });
                   }}
                 >
                   <ChevronLeft size={24} color="white" />
@@ -117,19 +141,23 @@ export const App = function App() {
 
               {isMoreData && (
                 <button
+                  name="button-next-pagination"
                   disabled={loading}
                   onClick={async () => {
                     await fetchMore({
                       variables: { offset: offset + 10 },
                     });
-                    setOffset((p) => p + 10);
+                    setOffset((p) => {
+                      OffsetVar(p + 10);
+                      return p + 10;
+                    });
                   }}
                 >
                   <ChevronRight size={24} color="white" />
                 </button>
               )}
             </div>
-          </>
+          </div>
         )}
       </Container>
     </Layouts>
