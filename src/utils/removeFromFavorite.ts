@@ -3,12 +3,7 @@ import { refetchLocalStorage } from './addToFavorite';
 import { cache } from './provider';
 import { GetContactListDocument } from '@/gql/file';
 
-export const removeFromFavorite = ({
-  contact,
-}: {
-  contact: BaseContact;
-  isFirstPage: boolean;
-}) => {
+export const removeFromFavorite = ({ contact }: { contact: BaseContact }) => {
   const data = localStorage.getItem('favorite');
 
   const excludeID = localStorage.getItem('excludeID');
@@ -45,8 +40,11 @@ export const removeFromFavorite = ({
   const oldData = cache.readQuery({ query: GetContactListDocument }) as {
     contact: BaseContact[];
   };
-  const newData = [...oldData.contact, contact];
-  cache.writeQuery({ query: GetContactListDocument, data: newData });
+  const newData = [contact, ...oldData.contact];
+  cache.writeQuery({
+    query: GetContactListDocument,
+    data: { contact: newData },
+  });
 
   localStorage.setItem('favorite', JSON.stringify(tempFavorite));
   localStorage.setItem('excludeID', JSON.stringify(tempExludeId));

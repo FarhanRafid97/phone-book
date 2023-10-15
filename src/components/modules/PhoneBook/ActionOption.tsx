@@ -1,10 +1,10 @@
-import { OffsetVar } from '@/App';
 import Button from '@/components/Ui/Button';
 import Modal from '@/components/Ui/Modal';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import { headerActionModal } from '@/styles/emotion/general';
 import { BaseContact } from '@/types/Contact';
 import { addToFavorite } from '@/utils/addToFavorite';
+import { isMoreList } from '@/utils/provider';
 import { removeFromFavorite } from '@/utils/removeFromFavorite';
 import { useReactiveVar } from '@apollo/client';
 import { css } from '@emotion/react';
@@ -21,7 +21,7 @@ const ActionOption: React.FC<IActionOptionProps> = ({
   contact,
   isFavoriteList,
 }) => {
-  const offset = useReactiveVar(OffsetVar);
+  const isMoredata = useReactiveVar(isMoreList);
   const refDropdown = useRef(null);
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -87,7 +87,9 @@ const ActionOption: React.FC<IActionOptionProps> = ({
           <div
             onClick={() => {
               if (isFavoriteList) {
-                removeFromFavorite({ contact, isFirstPage: offset === 0 });
+                const tempIsMore = isMoredata;
+                removeFromFavorite({ contact });
+                isMoreList(tempIsMore);
               } else {
                 addToFavorite({ contact });
               }

@@ -4,11 +4,13 @@ import { Phone, UserCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import ActionOption from './ActionOption';
 import ModalForDetailUser from './ModalForDetailUser';
+import { formatDateToDdMmYyyy } from '@/utils/generateDate';
 
 interface IListContactProps {
   contact: BaseContact;
   isFavoriteList?: boolean;
 }
+
 const ListContact: React.FC<IListContactProps> = ({
   contact,
   isFavoriteList,
@@ -16,6 +18,7 @@ const ListContact: React.FC<IListContactProps> = ({
   const isMore = contact.phones.length > 1;
   const [isShowMore, setIsShowMore] = useState(false);
   const [isOpenModalDetailUser, setIsOpenModalDetailUser] = useState(false);
+
   return (
     <>
       <div
@@ -24,7 +27,15 @@ const ListContact: React.FC<IListContactProps> = ({
       >
         <UserCircle size={34} color="white" />
         <div css={styleDetailUser}>
-          <h1>{`${contact.first_name} ${contact.last_name} ${contact.id}`}</h1>
+          <h1>{`${contact.first_name} ${contact.last_name}`}</h1>
+          <p
+            css={css`
+              font-size: 12px;
+              color: #555555;
+            `}
+          >
+            {formatDateToDdMmYyyy(new Date(contact.created_at))}
+          </p>
           {isShowMore}
           {!isShowMore ? (
             <p className="phoneNumber">
