@@ -6,3 +6,5 @@ export interface BaseContact {
   last_name: string;
   phones: Array<{ __typename?: 'phone'; number: string }>;
 }
+
+export type PhonesInput = { __typename?: 'phone'; number: string };

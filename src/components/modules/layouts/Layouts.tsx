@@ -1,7 +1,7 @@
-import React, { ReactNode } from 'react';
-import Navbar from './Navbar';
-import Footer from './Footer';
 import { css } from '@emotion/react';
+import React, { ReactNode } from 'react';
+import Footer from './Footer';
+import Navbar from './Navbar';
 
 interface ILayoutsProps {
   children: ReactNode;

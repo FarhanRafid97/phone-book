@@ -123,11 +123,10 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
     <Container>
       <h1
         css={css`
-          color: white;
-          font-weight: 500;
           margin-bottom: 15px;
-          font-size: 28px;
-          text-align: center;
+          font-weight: 800;
+          color: white;
+          font-size: 24px;
         `}
       >
         Edit Contact {`${contact.first_name} ${contact.last_name}`}
@@ -193,7 +192,8 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                   </Button>
                 </div>
               ) : (
-                <button
+                <Button
+                  isFull
                   onClick={() => {
                     setIsEditBasicInfo(true);
                     seteditedPhoneIndex(-1);
@@ -201,10 +201,10 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                       firstNameRef.current?.focus();
                     }, 50);
                   }}
-                  css={ButtonEditContact}
+                  variant="blue"
                 >
                   Edit Basic Info
-                </button>
+                </Button>
               )}
             </div>
           </form>
@@ -252,7 +252,9 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                         </Button>
                       </div>
                     ) : (
-                      <button
+                      <Button
+                        isFull
+                        variant="blue"
                         type="button"
                         onClick={() => {
                           setOldPhoneNumber(phone.number);
@@ -261,10 +263,9 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                             reInput.current?.focus();
                           }, 50);
                         }}
-                        css={ButtonEditContact}
                       >
                         <FileEdit size={14} /> Edit Phone
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </form>

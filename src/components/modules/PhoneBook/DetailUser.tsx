@@ -15,10 +15,10 @@ const DetailUser: React.FC<DetailUserProps> = ({ contact }) => {
         css={css`
           color: white;
 
-          font-weight: 500;
-          margin-bottom: 25px;
-          font-size: 28px;
-          text-align: center;
+          margin-bottom: 15px;
+          font-weight: 800;
+          color: white;
+          font-size: 24px;
         `}
       >
         Detail {`${contact.first_name} ${contact.last_name}`}
