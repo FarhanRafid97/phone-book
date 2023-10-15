@@ -9,7 +9,7 @@ const buttonColor = {
   green: '#4caf50',
 } as const;
 const buttonColorHover = {
-  red: '#af1818',
+  red: '#812222',
   gray: '#858585',
   blue: '#2e77f6',
   green: '#26a92b',
