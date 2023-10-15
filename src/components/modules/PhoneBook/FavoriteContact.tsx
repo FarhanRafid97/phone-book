@@ -1,11 +1,10 @@
-import Container from '@/components/Ui/Container';
+import Spinner from '@/components/Ui/Spinner';
 import { BaseContact } from '@/types/Contact';
+import { refetchLocalStorage } from '@/utils/addToFavorite';
+import { makeVar, useReactiveVar } from '@apollo/client';
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import ListContact from './ListContact';
-import Spinner from '@/components/Ui/Spinner';
-import { makeVar, useReactiveVar } from '@apollo/client';
-import { refetchLocalStorage } from '@/utils/addToFavorite';
 
 const FavoriteContact: React.FC = () => {
   const [favoriteContacts, setFavoriteContacts] = useState<BaseContact[]>([]);
@@ -37,7 +36,11 @@ const FavoriteContact: React.FC = () => {
     };
   }, [triggerRefetchStorage]);
   return (
-    <Container>
+    <div
+      css={css`
+        margin-bottom: 15px;
+      `}
+    >
       <h1
         css={css`
           margin-bottom: 15px;
@@ -80,7 +83,7 @@ const FavoriteContact: React.FC = () => {
           </h1>
         )}
       </div>
-    </Container>
+    </div>
   );
 };
 

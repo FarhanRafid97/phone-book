@@ -177,7 +177,7 @@ export const App = function App() {
   );
 };
 
-export const PaginationStyle = css`
+const PaginationStyle = css`
   display: flex;
   margin-top: 30px;
   gap: 15px;

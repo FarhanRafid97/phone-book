@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, makeVar } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache, makeVar } from '@apollo/client';
 
 export const cache = new InMemoryCache({
   typePolicies: {
@@ -22,8 +22,8 @@ export const cache = new InMemoryCache({
 });
 
 export const client = new ApolloClient({
-  uri: 'https://wpe-hiring.tokopedia.net/graphql',
   connectToDevTools: true,
+  link: new HttpLink({ uri: 'https://wpe-hiring.tokopedia.net/graphql' }),
   cache,
 });
 
