@@ -7,11 +7,12 @@ export const cache = new InMemoryCache({
         contact: {
           keyArgs: [],
           merge(_, incoming) {
-            console.log('isMoreData', incoming);
             const isMoreData = incoming.length < 11;
             isMoreList(!isMoreData);
             if (!isMoreData) {
-              incoming.pop();
+              const newData = [...incoming];
+              newData.pop();
+              return newData;
             }
             return incoming;
           },
@@ -23,6 +24,7 @@ export const cache = new InMemoryCache({
 
 export const client = new ApolloClient({
   connectToDevTools: true,
+  credentials: 'include',
   link: new HttpLink({ uri: 'https://wpe-hiring.tokopedia.net/graphql' }),
   cache,
 });
