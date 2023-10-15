@@ -83,6 +83,7 @@ export const App = function App() {
       <Layouts>
         <Container>
           <SearchInput
+            setSearch={setSearch}
             id="searchInput"
             aria-label="searchInput"
             value={search}
@@ -124,9 +125,24 @@ export const App = function App() {
                   align-items: center;
                 `}
               >
-                {data?.contact.map((contact) => {
-                  return <ListContact key={contact.id} contact={contact} />;
-                })}
+                {data?.contact.length ?? 0 > 1 ? (
+                  data?.contact.map((contact) => {
+                    return <ListContact key={contact.id} contact={contact} />;
+                  })
+                ) : (
+                  <h1
+                    css={css`
+                      margin-bottom: 15px;
+                      margin-top: 15px;
+                      font-weight: 400;
+                      color: white;
+                      text-align: center;
+                      font-size: 18px;
+                    `}
+                  >
+                    No Contact List
+                  </h1>
+                )}
               </div>
               <div css={PaginationStyle}>
                 {offset > 0 && (
