@@ -1,14 +1,11 @@
 import Button from '@/components/Ui/Button';
 import Dialog from '@/components/Ui/Dialog';
 import Spinner from '@/components/Ui/Spinner';
-import {
-  GetContactListDocument,
-  GetContactListQuery,
-  useDeleteContactByPkMutation,
-} from '@/gql/file';
+import { useDeleteContactByPkMutation } from '@/gql/file';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 
 import { BaseContact } from '@/types/Contact';
+import { removeFromLocalStorage } from '@/utils/removeFromLocalStorage';
 import { css } from '@emotion/react';
 import { useRef, useState } from 'react';
 
@@ -37,16 +34,14 @@ const DeleteContact: React.FC<DeleteContactProps> = ({
           const normalizedId = cache.identify({
             __ref: 'contact:' + contact.id,
           });
-          const data = cache.readQuery<GetContactListQuery>({
-            query: GetContactListDocument,
-          });
-          console.log(data);
+
           cache.modify({
             id: normalizedId,
             fields: (_, { DELETE }) => DELETE,
           });
         },
       });
+      removeFromLocalStorage({ contact });
     } catch (error) {
       console.log(error);
     } finally {

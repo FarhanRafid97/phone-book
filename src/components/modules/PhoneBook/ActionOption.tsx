@@ -87,9 +87,7 @@ const ActionOption: React.FC<IActionOptionProps> = ({
             onClick={() => {
               if (isFavoriteList) {
                 removeFromFavorite({ contact, isFirstPage: offset === 0 });
-                console.log('remove');
               } else {
-                console.log('add');
                 addToFavorite({ contact });
               }
             }}

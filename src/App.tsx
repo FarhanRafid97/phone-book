@@ -24,7 +24,7 @@ export const App = function App() {
   const [eq, setEq] = useState('');
 
   const excludeID = localStorage.getItem('excludeID');
-  console.log('excludeID', excludeID);
+
   const { data, fetchMore, loading } = useGetContactListQuery({
     variables: {
       limit: 11,
@@ -45,7 +45,7 @@ export const App = function App() {
       await fetchMore({
         variables: {
           offset: 0,
-          limit: 10,
+          limit: 11,
           where: {
             first_name: {
               _like: `%${eq}%`,

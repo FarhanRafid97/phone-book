@@ -20,7 +20,7 @@ const FavoriteContact: React.FC = () => {
       if (data) {
         try {
           tempFavorite = JSON.parse(data);
-          console.log('temp refetchg', tempFavorite);
+
           if (!ignore) {
             setFavoriteContacts(tempFavorite);
           }

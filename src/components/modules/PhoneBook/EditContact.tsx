@@ -14,10 +14,11 @@ import {
   InputWrapperStyle,
 } from '@/styles/emotion/editContactStyle';
 import { BaseContact } from '@/types/Contact';
+import { editFromLocalStorage } from '@/utils/editFromLocalStorage';
 import { css } from '@emotion/react';
 import { FileEdit } from 'lucide-react';
 import React, { createRef, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 interface IEditContactProps {
   contact: BaseContact;
@@ -29,13 +30,16 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
     setValue,
     watch,
     setError,
-
+    clearErrors,
+    control,
+    getValues,
     formState: { errors },
   } = useForm<BaseContact>({
     values: contact,
   });
+  console.log(getValues());
 
-  console.log(errors);
+  const { fields } = useFieldArray({ control, name: 'phones' });
   const [editPhoneNumber] = useEditPhoneNumberMutation();
   const [editContactById] = useEditContactByIdMutation();
 
@@ -49,7 +53,6 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
 
   const firstNameRef = useRef<HTMLInputElement>(null);
 
-  const watchPhone = watch('phones');
   const watchFirstName = watch('first_name');
   const watchLastName = watch('last_name');
 
@@ -72,7 +75,6 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
           },
         },
         update(cache) {
-          console.log('errors', errors);
           cache.modify({
             id: cache.identify({ __typename: 'contact', id: contact.id }),
             fields: {
@@ -95,6 +97,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
       }
     } finally {
       setIsLoading(false);
+      editFromLocalStorage({ contact: data });
       setIsEditBasicInfo(false);
     }
   };
@@ -137,6 +140,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
       console.log(error);
     } finally {
       setIsLoading(false);
+      editFromLocalStorage({ contact: data });
       seteditedPhoneIndex(-1);
       setOldPhoneNumber('');
     }
@@ -186,7 +190,6 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                         'Please enter only alphabet characters. Special characters and symbols are not allowed.',
                     },
                   })}
-                  ref={firstNameRef}
                   disabled={!isEditBasicInfo}
                   value={watchFirstName}
                   name="first_name"
@@ -230,7 +233,10 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                   <Button
                     type="button"
                     variant="gray"
-                    onClick={() => setIsEditBasicInfo(false)}
+                    onClick={() => {
+                      setIsEditBasicInfo(false);
+                      clearErrors();
+                    }}
                   >
                     Cancel
                   </Button>
@@ -254,10 +260,10 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
           </form>
 
           <div className="wrapper-edit-phones">
-            {contact.phones.map((phone, i) => {
+            {fields.map((phone, i) => {
               const reInput = phoneRef[i];
               return (
-                <form key={i} onSubmit={handleSubmit(onSubmitPhone)}>
+                <form key={phone.id} onSubmit={handleSubmit(onSubmitPhone)}>
                   <div
                     css={css`
                       display: flex;
@@ -270,6 +276,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                       <p className="label-input">Phone #{i + 1}</p>
 
                       <Input
+                        key={phone.id}
                         {...register(`phones.${i}.number`, {
                           required: { value: true, message: 'Field Required' },
                           pattern: {
@@ -277,11 +284,6 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                             message: 'Invalid Phone Number',
                           },
                         })}
-                        ref={reInput}
-                        value={watchPhone[i].number}
-                        onChange={(e) =>
-                          setValue(`phones.${i}.number`, e.target.value)
-                        }
                         disabled={i !== editedPhoneIndex}
                       />
                       {errors.phones?.[i]?.number ? (
