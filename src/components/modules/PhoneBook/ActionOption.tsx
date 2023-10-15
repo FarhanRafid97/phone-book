@@ -75,15 +75,13 @@ const ActionOption: React.FC<IActionOptionProps> = ({ contact }) => {
                 try {
                   tempFavorite = JSON.parse(data);
                   if (!Array.isArray(tempFavorite)) {
-                    tempFavorite = []; // If it's not an array, initialize as an empty array
+                    tempFavorite = [];
                   }
                 } catch (error) {
                   console.error('Error parsing JSON:', error);
                 }
               }
-              console.log(tempFavorite);
 
-              // Now you can add the new item to tempFavorite and update the localStorage
               tempFavorite.push(contact);
               localStorage.setItem('favorite', JSON.stringify(tempFavorite));
             }}
