@@ -7,6 +7,7 @@ export const cache = new InMemoryCache({
         contact: {
           keyArgs: [],
           merge(_, incoming) {
+            console.log('isMoreData', incoming);
             const isMoreData = incoming.length < 11;
             isMoreList(!isMoreData);
             if (!isMoreData) {

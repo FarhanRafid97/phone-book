@@ -6,6 +6,13 @@ import {
   useEditContactByIdMutation,
   useEditPhoneNumberMutation,
 } from '@/gql/file';
+import { errorMessage } from '@/styles/emotion/addnewContactStyle';
+
+import {
+  ButtonSave,
+  ContainerFormInput,
+  InputWrapperStyle,
+} from '@/styles/emotion/editContactStyle';
 import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
 import { FileEdit } from 'lucide-react';
@@ -16,10 +23,19 @@ interface IEditContactProps {
   contact: BaseContact;
 }
 const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
-  const { handleSubmit, setValue, watch } = useForm<BaseContact>({
+  const {
+    handleSubmit,
+    register,
+    setValue,
+    watch,
+    setError,
+
+    formState: { errors },
+  } = useForm<BaseContact>({
     values: contact,
   });
 
+  console.log(errors);
   const [editPhoneNumber] = useEditPhoneNumberMutation();
   const [editContactById] = useEditContactByIdMutation();
 
@@ -56,6 +72,7 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
           },
         },
         update(cache) {
+          console.log('errors', errors);
           cache.modify({
             id: cache.identify({ __typename: 'contact', id: contact.id }),
             fields: {
@@ -69,8 +86,13 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
           });
         },
       });
-    } catch (error) {
-      console.log(error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.message.includes('duplicate')) {
+        setError(`phones.${editedPhoneIndex}.number`, {
+          message: 'Duplicate Phone Number',
+        });
+      }
     } finally {
       setIsLoading(false);
       setIsEditBasicInfo(false);
@@ -156,21 +178,43 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
               <label css={ContainerFormInput}>
                 <p>First Name</p>
                 <Input
+                  {...register('first_name', {
+                    required: { value: true, message: 'Field Required' },
+                    pattern: {
+                      value: /^[A-Za-z ]+$/,
+                      message:
+                        'Please enter only alphabet characters. Special characters and symbols are not allowed.',
+                    },
+                  })}
                   ref={firstNameRef}
                   disabled={!isEditBasicInfo}
                   value={watchFirstName}
                   name="first_name"
                   onChange={(e) => setValue('first_name', e.target.value)}
                 />
+                {errors.first_name ? (
+                  <span css={errorMessage}>{errors.first_name?.message}</span>
+                ) : null}
               </label>
               <label css={ContainerFormInput}>
                 <p>Last Name</p>
                 <Input
+                  {...register('last_name', {
+                    required: { value: true, message: 'Field Required' },
+                    pattern: {
+                      value: /^[A-Za-z ]+$/,
+                      message:
+                        'Please enter only alphabet characters. Special characters and symbols are not allowed.',
+                    },
+                  })}
                   disabled={!isEditBasicInfo}
                   value={watchLastName}
                   name="last_name"
                   onChange={(e) => setValue('last_name', e.target.value)}
                 />
+                {errors.last_name ? (
+                  <span css={errorMessage}>{errors.last_name?.message}</span>
+                ) : null}
               </label>
               {isEditBasicInfo ? (
                 <div className="wrapper-is-edit-button">
@@ -226,6 +270,13 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                       <p className="label-input">Phone #{i + 1}</p>
 
                       <Input
+                        {...register(`phones.${i}.number`, {
+                          required: { value: true, message: 'Field Required' },
+                          pattern: {
+                            value: /^(?:\+\d+|\d+)$/,
+                            message: 'Invalid Phone Number',
+                          },
+                        })}
                         ref={reInput}
                         value={watchPhone[i].number}
                         onChange={(e) =>
@@ -233,6 +284,11 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
                         }
                         disabled={i !== editedPhoneIndex}
                       />
+                      {errors.phones?.[i]?.number ? (
+                        <span css={errorMessage}>
+                          {errors.phones?.[i]?.number?.message}
+                        </span>
+                      ) : null}
                     </label>
                     {editedPhoneIndex === i ? (
                       <div className="wrapper-is-edit-button">
@@ -278,91 +334,4 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
   );
 };
 
-export const ButtonEditContact = css`
-  border: none;
-  padding: 7px 0;
-
-  border-radius: 7px;
-  cursor: pointer;
-  background-color: #0e1c36;
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  justify-content: center;
-  &:hover {
-    background-color: #8f8f8f;
-  }
-`;
-export const ButtonCancel = css`
-  border: none;
-  padding: 7px 15px;
-  border-radius: 7px;
-  cursor: pointer;
-  background-color: #c02121;
-
-  color: white;
-  &:hover {
-    background-color: rgb(143, 143, 143);
-  }
-`;
-export const ButtonSave = css`
-  border: none;
-  padding: 7px 10px;
-  border-radius: 7px;
-  width: fit-content;
-  cursor: pointer;
-  background-color: #2fb366;
-  color: white;
-  &:hover {
-    background-color: #31985c;
-  }
-`;
-export const InputWrapperStyle = css`
-  z-index: 99;
-  width: 100%;
-
-  flex-direction: column;
-  gap: 40px;
-  display: flex;
-  .wrapper-is-edit-button {
-    display: flex;
-    gap: 7px;
-  }
-
-  .wrapper-edit-contact {
-    flex-direction: column;
-    gap: 10px;
-    display: flex;
-    .form-edit-phone {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      p {
-        color: white;
-      }
-    }
-  }
-  .wrapper-edit-phones {
-    flex-direction: column;
-    gap: 10px;
-    display: flex;
-    > div {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      p {
-        color: white;
-      }
-    }
-  }
-`;
-
-export const ContainerFormInput = css`
-  display: flex;
-  flex-direction: column;
-
-  gap: 5px;
-  margin-bottom: 5px;
-`;
 export default EditContact;

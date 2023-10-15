@@ -12,6 +12,11 @@ import { Plus, Trash } from 'lucide-react';
 import { useAddContactWithPhonesMutation } from '@/gql/file';
 import { useReactiveVar } from '@apollo/client';
 import { OffsetVar } from '@/App';
+import {
+  containerFormAddContact,
+  errorMessage,
+  wraperInput,
+} from '@/styles/emotion/addnewContactStyle';
 interface AddNewContactProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -207,31 +212,5 @@ const AddNewContact: React.FC<AddNewContactProps> = ({ isOpen, setIsOpen }) => {
     </Modal>
   );
 };
-const errorMessage = css`
-  color: #e75757;
-  font-size: 12px;
-`;
-
-const containerFormAddContact = css`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  label {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    > span {
-      font-size: 14px;
-    }
-  }
-`;
-
-const wraperInput = css`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-
-  gap: 5px;
-`;
 
 export default AddNewContact;

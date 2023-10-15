@@ -1,8 +1,11 @@
 import Container from '@/components/Ui/Container';
 import InputUnderline from '@/components/Ui/InputUnderLine';
+import {
+  ContainerFormInput,
+  InputWrapperStyle,
+} from '@/styles/emotion/editContactStyle';
 import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
-import { ContainerFormInput, InputWrapperStyle } from './EditContact';
 
 interface DetailUserProps {
   contact: BaseContact;
