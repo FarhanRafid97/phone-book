@@ -1,10 +1,10 @@
 import { BaseContact } from '@/types/Contact';
 import { refetchLocalStorage } from './addToFavorite';
 import { cache } from './provider';
+import { GetContactListDocument } from '@/gql/file';
 
 export const removeFromFavorite = ({
   contact,
-  isFirstPage,
 }: {
   contact: BaseContact;
   isFirstPage: boolean;
@@ -41,18 +41,14 @@ export const removeFromFavorite = ({
       console.error(error);
     }
   }
-  cache.modify({
-    fields: {
-      contact(existing): BaseContact[] {
-        if (!isFirstPage) {
-          return existing;
-        }
-        return [contact, ...existing];
-      },
-    },
-  });
 
-  refetchLocalStorage(Math.random());
+  const oldData = cache.readQuery({ query: GetContactListDocument }) as {
+    contact: BaseContact[];
+  };
+  const newData = [...oldData.contact, contact];
+  cache.writeQuery({ query: GetContactListDocument, data: newData });
+
   localStorage.setItem('favorite', JSON.stringify(tempFavorite));
   localStorage.setItem('excludeID', JSON.stringify(tempExludeId));
+  refetchLocalStorage(Math.random());
 };

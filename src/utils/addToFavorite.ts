@@ -30,23 +30,20 @@ export const addToFavorite = ({ contact }: { contact: BaseContact }) => {
       console.error(error);
     }
   }
-  cache.modify({
-    fields: {
-      contact(existing): BaseContact[] {
-        const newData = existing.filter(
-          (exist: BaseContact) => exist.id !== contact.id,
-        );
+  const normalizedId = cache.identify({
+    __ref: 'contact:' + contact.id,
+  });
 
-        return newData;
-      },
-    },
+  cache.modify({
+    id: normalizedId,
+    fields: (_, { DELETE }) => DELETE,
   });
 
   tempFavorite.push(contact);
   tempExludeId.push(contact.id);
-  refetchLocalStorage(contact.id);
   localStorage.setItem('favorite', JSON.stringify(tempFavorite));
   localStorage.setItem('excludeID', JSON.stringify(tempExludeId));
+  refetchLocalStorage(contact.id);
 };
 
 export const refetchLocalStorage = makeVar(1);
