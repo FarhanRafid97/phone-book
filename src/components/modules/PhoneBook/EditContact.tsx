@@ -149,13 +149,13 @@ const EditContact: React.FC<IEditContactProps> = ({ contact }) => {
     <Container>
       <h1
         css={css`
-          margin-bottom: 15px;
+          margin-bottom: 25px;
           font-weight: 800;
           color: white;
           font-size: 24px;
         `}
       >
-        Edit Contact {`${contact.first_name} ${contact.last_name}`}
+        Edit Contact
       </h1>
       <div
         css={css`

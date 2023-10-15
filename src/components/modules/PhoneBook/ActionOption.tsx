@@ -1,23 +1,18 @@
+import { OffsetVar } from '@/App';
+import Button from '@/components/Ui/Button';
 import Modal from '@/components/Ui/Modal';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
+import { headerActionModal } from '@/styles/emotion/general';
 import { BaseContact } from '@/types/Contact';
-import { css } from '@emotion/react';
-import {
-  FileEdit,
-  MoreVertical,
-  Search,
-  Star,
-  Trash,
-  Trash2,
-} from 'lucide-react';
-import React, { useRef, useState } from 'react';
-import EditContact from './EditContact';
-import ModalForDetailUser from './ModalForDetailUser';
-import DeleteContact from './DeleteContact';
 import { addToFavorite } from '@/utils/addToFavorite';
 import { removeFromFavorite } from '@/utils/removeFromFavorite';
 import { useReactiveVar } from '@apollo/client';
-import { OffsetVar } from '@/App';
+import { css } from '@emotion/react';
+import { FileEdit, MoreVertical, Search, Star, Trash2 } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import DeleteContact from './DeleteContact';
+import EditContact from './EditContact';
+import ModalForDetailUser from './ModalForDetailUser';
 interface IActionOptionProps {
   contact: BaseContact;
   isFavoriteList?: boolean;
@@ -47,7 +42,13 @@ const ActionOption: React.FC<IActionOptionProps> = ({
       <div
         onClick={() => setIsOpenDropDown(true)}
         css={css`
-          cursor: pointer;
+          padding: 5px;
+          background-color: rgb(255, 255, 255, 0.2);
+          border-radius: 7px;
+          &:hover {
+            background-color: rgb(255, 255, 255, 0.1);
+            cursor: pointer;
+          }
         `}
       >
         <MoreVertical color="white" />
@@ -76,7 +77,7 @@ const ActionOption: React.FC<IActionOptionProps> = ({
               setIsOpenModalDetailUser(true);
             }}
           >
-            <Search />
+            <Search size={22} />
             <p>Detail</p>
           </div>
 
@@ -92,13 +93,18 @@ const ActionOption: React.FC<IActionOptionProps> = ({
               }
             }}
           >
-            {isFavoriteList ? <Trash /> : <Star />}
-            <p>Favorite</p>
+            <Star />
+            <p>{isFavoriteList ? 'Remove Favorite' : 'Favorite'}</p>
           </div>
         </div>
       ) : null}
       {isOpenModal ? (
         <Modal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
+          <div css={headerActionModal}>
+            <Button variant="red" onClick={() => setIsOpenModal(false)}>
+              Close
+            </Button>
+          </div>
           <EditContact contact={contact} />
         </Modal>
       ) : null}
@@ -123,6 +129,7 @@ const ActionOption: React.FC<IActionOptionProps> = ({
 const dropDownstyle = css`
   position: absolute;
   right: 0;
+  overflow: auto;
   background-color: #1d1d1d;
   z-index: 9999;
   box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
@@ -131,11 +138,10 @@ const dropDownstyle = css`
     display: flex;
     align-items: center;
     cursor: pointer;
-    gap: 5px;
+    gap: 10px;
     padding: 10px 15px;
-
+    font-size: 14px;
     min-width: 180px;
-
     color: white;
     &:hover {
       background-color: rgb(128, 128, 128, 0.3);

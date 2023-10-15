@@ -6,6 +6,8 @@ import DetailUser from './DetailUser';
 import { css } from '@emotion/react';
 import { FileEdit, Search } from 'lucide-react';
 import EditContact from './EditContact';
+import Button from '@/components/Ui/Button';
+import { headerActionModal } from '@/styles/emotion/general';
 interface ModalForDetailUserProps {
   contact: BaseContact;
   isOpenModal: boolean;
@@ -21,18 +23,21 @@ const ModalForDetailUser: React.FC<ModalForDetailUserProps> = ({
   return (
     <Modal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
       <div>
-        <div css={ToggleEditAndDetailStyle}>
+        <div css={headerActionModal}>
           {!isEdit ? (
             <button onClick={() => setIsEdit(true)} css={ButtonEditContact}>
-              <FileEdit />
+              <FileEdit size={14} />
               <p>Edit</p>
             </button>
           ) : (
             <button onClick={() => setIsEdit(false)} css={ButtonEditContact}>
-              <Search />
+              <Search size={14} />
               <p>Detail</p>
             </button>
           )}
+          <Button variant="red" onClick={() => setIsOpenModal(false)}>
+            Close
+          </Button>
         </div>
         {isEdit ? (
           <EditContact contact={contact} />
@@ -48,6 +53,7 @@ const ButtonEditContact = css`
   display: flex;
   color: white;
   align-items: center;
+  gap: 5px;
   padding: 8px 10px;
   border-radius: 7px;
   background-color: rgb(255, 255, 255, 0.15);
@@ -57,15 +63,4 @@ const ButtonEditContact = css`
   }
 `;
 
-const ToggleEditAndDetailStyle = css`
-  width: 480px;
-  margin: 0px auto;
-  padding: 10px 32px;
-  display: flex;
-  justify-content: end;
-  @media (max-width: 500px) {
-    width: 100vw;
-    padding: 15px 32px;
-  }
-`;
 export default ModalForDetailUser;

@@ -21,7 +21,7 @@ const inputStyle = css`
   border-bottom: 1px solid #dbdbdb;
   color: white;
   padding: 10px;
-
+  border-radius: 0;
   &:focus {
     outline: none;
   }

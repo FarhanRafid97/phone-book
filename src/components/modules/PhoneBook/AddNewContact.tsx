@@ -17,6 +17,7 @@ import {
   errorMessage,
   wraperInput,
 } from '@/styles/emotion/addnewContactStyle';
+import { headerActionModal } from '@/styles/emotion/general';
 interface AddNewContactProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -74,6 +75,11 @@ const AddNewContact: React.FC<AddNewContactProps> = ({ isOpen, setIsOpen }) => {
   };
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+      <div css={headerActionModal}>
+        <Button variant="red" onClick={() => setIsOpen(false)}>
+          Close
+        </Button>
+      </div>
       <Container>
         <h1
           css={css`
@@ -197,14 +203,6 @@ const AddNewContact: React.FC<AddNewContactProps> = ({ isOpen, setIsOpen }) => {
             {error ? <p css={errorMessage}>{error}</p> : null}
             <Button isFull variant="blue">
               Save
-            </Button>
-            <Button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              isFull
-              variant="gray"
-            >
-              Cancel
             </Button>
           </div>
         </form>
