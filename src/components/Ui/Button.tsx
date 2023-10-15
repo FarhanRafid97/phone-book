@@ -5,14 +5,14 @@ import Spinner from './Spinner';
 const buttonColor = {
   red: '#af2626',
   gray: '#5d5d5d',
-  blue: '#0e1c36',
-  green: '#26af5f',
+  blue: '#5485d9',
+  green: '#4caf50',
 } as const;
 const buttonColorHover = {
-  red: '#993434',
+  red: '#af1818',
   gray: '#858585',
-  blue: '#8f8f8f',
-  green: '#31985c',
+  blue: '#2e77f6',
+  green: '#26a92b',
 } as const;
 
 type ButtonColor = typeof buttonColor;

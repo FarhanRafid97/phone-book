@@ -42,7 +42,7 @@ const styleBaseModal = css`
     margin-top: auto;
 
     width: 100%;
-    background-color: #1f2738;
+    background-color: #262626;
     min-height: 100px;
   }
 `;

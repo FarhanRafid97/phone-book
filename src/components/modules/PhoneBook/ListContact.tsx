@@ -46,14 +46,20 @@ const ListContact: React.FC<IListContactProps> = ({ contact }) => {
 };
 
 const styleListContactContainer = css`
-  background: #1e293b;
+  background: #262626;
+  border: 1px solid #404040;
   width: 100%;
   padding: 12px 18px;
+
   display: flex;
   align-items: center;
   gap: 15px;
 
   border-radius: 7px;
+  &:hover {
+    background: rgb(38, 38, 38, 0.3);
+    cursor: pointer;
+  }
 `;
 
 const styleDetailUser = css`

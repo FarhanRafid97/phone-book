@@ -6,10 +6,11 @@ import {
   GetContactListQuery,
   useDeleteContactByPkMutation,
 } from '@/gql/file';
+import { useOutsideClick } from '@/hooks/useOutsideClick';
 
 import { BaseContact } from '@/types/Contact';
 import { css } from '@emotion/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 interface DeleteContactProps {
   isOpen: boolean;
@@ -24,6 +25,8 @@ const DeleteContact: React.FC<DeleteContactProps> = ({
 }) => {
   const [deleteContact] = useDeleteContactByPkMutation();
   const [loading, setLoading] = useState(false);
+  const dialogContentRef = useRef<HTMLDivElement>(null);
+  useOutsideClick({ isOpen, setIsOpen, ref: dialogContentRef });
   const onDeletContact = () => {
     setLoading(true);
     try {
@@ -53,7 +56,7 @@ const DeleteContact: React.FC<DeleteContactProps> = ({
   };
   return (
     <Dialog isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div css={containerDeleteContact}>
+      <div ref={dialogContentRef} css={containerDeleteContact}>
         <h1>
           Are You Sure want delete{' '}
           <span>{`${contact.first_name} ${contact.last_name} `}</span>
@@ -99,9 +102,9 @@ const CancelButton = css`
 const containerDeleteContact = css`
   width: 580px;
   margin: 0px auto;
-  padding: 32px 2px;
+  padding: 32px 32px;
 
-  background-color: #1f2738;
+  background: #262626;
   padding: 50px;
 
   border-radius: 12px;
@@ -112,7 +115,7 @@ const containerDeleteContact = css`
       color: red;
     }
   }
-  @media (max-width: 500px) {
+  @media (max-width: 700px) {
     width: 90vw;
     padding: 32px 32px;
   }

@@ -1,33 +1,33 @@
 @font-face {
   font-family: 'Roboto-google';
-  src: url('../../public/Roboto/Roboto-Regular.ttf') format('truetype');
+  src: url('/Roboto/Roboto-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Roboto-google';
-  src: url('../../public/Roboto/Roboto-Bold.ttf') format('truetype');
+  src: url('/Roboto/Roboto-Bold.ttf') format('truetype');
   font-weight: 700; /* This is the font-weight for bold */
   font-style: normal;
 }
 @font-face {
   font-family: 'Roboto-google';
-  src: url('../../public/Roboto/Roboto-Medium.ttf') format('truetype');
+  src: url('/Roboto/Roboto-Medium.ttf') format('truetype');
   font-weight: 500; /* This is the font-weight for bold */
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Roboto-google';
-  src: url('../../public/Roboto/Roboto-Black.ttf') format('truetype');
+  src: url('/Roboto/Roboto-Black.ttf') format('truetype');
   font-weight: 900; /* This is the font-weight for black */
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Roboto-google';
-  src: url('../../public/Roboto/Roboto-Thin.ttf') format('truetype');
+  src: url('/Roboto/Roboto-Thin.ttf') format('truetype');
   font-weight: 100; /* This is the font-weight for black */
   font-style: normal;
 }
