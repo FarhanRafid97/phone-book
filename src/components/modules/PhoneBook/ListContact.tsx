@@ -92,11 +92,22 @@ const styleDetailUser = css`
   flex-direction: column;
   gap: 10px;
   color: #f8fafc;
+  width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-weight: 600;
   }
   .phoneNumber {
     font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .showMore {
     width: fit-content;
